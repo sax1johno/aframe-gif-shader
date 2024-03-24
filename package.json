@@ -1,19 +1,21 @@
 {
   "name": "aframe-gif-shader",
-  "version": "0.9.1",
+  "version": "1.5.0",
   "description": "A shader to display GIF for A-Frame VR.",
-  "main": "dist/aframe-gif-shader.js",
+  "main": "dist/aframe-gif-component.js",
   "scripts": {
-    "build": "webpack -p examples/main.js examples/build.js",
+    "build": "npm run dist:max && npm run dist:min",
     "dev": "budo examples/main.js:build.js --dir examples --port 8000 --live -- -t babelify",
-    "dist": "webpack index.js dist/aframe-gif-component.js && webpack -p index.js dist/aframe-gif-component.min.js",
+    "dist": "npm run dist:max",
+    "dist:max": "webpack --config webpack.config.js",
+    "dist:min": "webpack --config webpack.prod.config.js",
     "postpublish": "npm run dist",
     "preghpages": "npm run build && rm -rf gh-pages && cp -r examples gh-pages",
     "ghpages": "npm run preghpages && ghpages -p gh-pages"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mayognaise/aframe-gif-shader.git"
+    "url": "git+https://github.com/sax1johno/aframe-gif-shader.git"
   },
   "keywords": [
     "aframe",
@@ -27,24 +29,26 @@
     "shader",
     "material"
   ],
-  "author": "Mayo Tobita <tobimayo@gmail.com>",
+  "authors": [
+    "Mayo Tobita <tobimayo@gmail.com>",
+    "John O'Connor <sax1johno@gmail.com"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mayognaise/aframe-gif-shader/issues"
+    "url": "https://github.com/sax1johno/aframe-gif-shader/issues"
   },
-  "homepage": "https://github.com/mayognaise/aframe-gif-shader#readme",
+  "homepage": "https://github.com/sax1johno/aframe-gif-shader#readme",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^6.4.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babelify": "^7.3.0",
-    "browserify": "^13.3.0",
-    "budo": "^8.4.0",
-    "ghpages": "0.0.3",
-    "webpack": "^1.15.0"
-  },
-  "peerDependencies": {
-    "aframe": "^0.9.0"
+    "@babel/core": "^7.18.5",
+    "@babel/plugin-syntax-decorators": "^7.24.1",
+    "@babel/preset-env": "^7.18.2",
+    "aframe": "^1.5.0",
+    "babel-loader": "^8.2.5",
+    "babel-plugin-istanbul": "^6.1.1",
+    "browserify": "^17.0.0",
+    "budo": "^11.8.4",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
   },
   "contributors": [
     "UXVirtual <michael@uxvirtual.com> (http://www.uxvirtual.com)",
@@ -52,5 +56,22 @@
     "Pablo Diego Silva da Silva <pablodiegoss@hotmail.com> (https://github.com/pablodiegoss)",
     "margauxdivernois (https://github.com/margauxdivernois)",
     "Danpollak (https://github.com/Danpollak)"
-  ]
+  ],
+  "dependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babelify": "^10.0.0",
+    "gh-pages": "^6.1.1"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "@babel/preset-env"
+          ]
+        }
+      ]
+    ]
+  }  
 }

@@ -1,4 +1,4 @@
-import { parseGIF } from './lib/gifsparser'
+import { parseGIF } from '../lib/gifsparser'
 
 if (typeof AFRAME === 'undefined') {
   throw 'Component attempted to register before AFRAME was available.'

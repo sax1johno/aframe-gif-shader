@@ -4,9 +4,9 @@ module.exports = {
   output : {
     path     : path.resolve(__dirname, 'dist'),
     publicPath: '/dist/',
-    filename : 'aframe-gif-component.js'
+    filename : 'aframe-gif-component.min.js'
   },
-  mode: 'development',
+  mode: 'production',
   module: {
     rules: [
       {
