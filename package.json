@@ -31,7 +31,6 @@
   ],
   "authors": [
     "Mayo Tobita <tobimayo@gmail.com>",
-    "John O'Connor <sax1johno@gmail.com"
   ],
   "license": "MIT",
   "bugs": {
@@ -55,7 +54,8 @@
     "Uri Shaked <uri@urish.org> (http://www.urish.org)",
     "Pablo Diego Silva da Silva <pablodiegoss@hotmail.com> (https://github.com/pablodiegoss)",
     "margauxdivernois (https://github.com/margauxdivernois)",
-    "Danpollak (https://github.com/Danpollak)"
+    "Danpollak (https://github.com/Danpollak)",
+    "John O'Connor <sax1johno@gmail.com> (https://github.com/sax1johno)"
   ],
   "dependencies": {
     "babel-preset-env": "^1.7.0",
