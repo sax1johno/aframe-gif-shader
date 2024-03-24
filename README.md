@@ -35,8 +35,8 @@ Install and use by directly including the [browser files](dist):
 ```html
 <head>
   <title>My A-Frame Scene</title>
-  <script src="https://aframe.io/releases/0.9.0/aframe.min.js"></script>
-  <script src="https://rawgit.com/mayognaise/aframe-gif-shader/master/dist/aframe-gif-shader.min.js"></script>
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://rawgit.com/sax1johno/aframe-gif-shader/master/dist/aframe-gif-component.min.js"></script>
 </head>
 
 <body>
@@ -51,7 +51,7 @@ Install and use by directly including the [browser files](dist):
 Install via NPM:
 
 ```bash
-npm i -D aframe-gif-shader
+npm i --save aframe-gif-shader
 ```
 
 Then register and use.
@@ -70,3 +70,4 @@ Thank you so much 🙏
 - [@pablodiegoss](https://github.com/pablodiegoss)
 - [@margauxdivernois](https://github.com/margauxdivernois)
 - [@Danpollak](https://github.com/Danpollak)
+- [@sax1johno](https://github.com/sax1johno)
