@@ -7,8 +7,8 @@ if (typeof AFRAME === 'undefined') {
 /* get util from AFRAME */
 const { parseUrl } = AFRAME.utils.srcLoader
 const { debug } = AFRAME.utils
-// debug.enable('shader:gif:*')
-debug.enable('shader:gif:warn')
+debug.enable('shader:gif:*')
+// debug.enable('shader:gif:warn')
 const warn = debug('shader:gif:warn')
 const log = debug('shader:gif:debug')
 
@@ -36,7 +36,7 @@ AFRAME.registerShader('gif', {
     color: { type: 'color' },
     fog: { default: true },
 
-    /* For texuture */
+    /* For texture */
     src: { default: null },
     autoplay: { default: true },
 
@@ -48,7 +48,7 @@ AFRAME.registerShader('gif', {
    */
   init (data) {
     log('init', data)
-    log(this.el.components)
+    // log(this.el.components)
     this.__cnv = document.createElement('canvas')
     this.__cnv.width = 2
     this.__cnv.height = 2
@@ -134,8 +134,8 @@ AFRAME.registerShader('gif', {
    * @property {Date} timestamp - created at the texure
    */
 
-  __setTexure (data) {
-    log('__setTexure', data)
+  __setTexture (data) {
+    log('__setTexture', data)
     if (data.status === 'error') {
       warn(`Error: ${data.message}\nsrc: ${data.src}`)
       this.__reset()
@@ -148,7 +148,7 @@ AFRAME.registerShader('gif', {
   },
 
   /**
-   * Update or create texure.
+   * Update or create texture.
    * @param {Object} data - Material component data.
    */
   __updateTexture (data) {
@@ -165,7 +165,7 @@ AFRAME.registerShader('gif', {
 
     /* src */
     if (src) {
-      this.__validateSrc(src, this.__setTexure.bind(this))
+      this.__validateSrc(src, this.__setTexture.bind(this))
     } else {
       /* Texture removed */
       this.__reset()
@@ -173,17 +173,21 @@ AFRAME.registerShader('gif', {
   },
 
   /*=============================================
-  =            varidation for texure            =
+  =            validation for texture            =
   =============================================*/
 
   __validateSrc (src, cb) {
 
     /* check if src is a url */
-    const url = parseUrl(src)
+    const url = parseUrl(src);
+    log("__validateSrc", src, url);
     if (url) {
       this.__getImageSrc(url, cb)
+      log(`__validateSrc: ${url} validated`);
       return
     }
+
+    log(`__validateSrc URL: ${url} validation failed.`);
 
     let message
 
@@ -210,6 +214,7 @@ AFRAME.registerShader('gif', {
 
     /* if there is message, create error data */
     if (message) {
+      log(`__validateSrc: ${message} validation failed.`);
       const srcData = gifData[src]
       const errData = createError(message, src)
       /* callbacks */
@@ -231,18 +236,21 @@ AFRAME.registerShader('gif', {
    * @param  {function} cb - callback with the test result
    */
   __getImageSrc (src, cb) {
-
+    log("__getImageSrc", src);
     /* if src is same as previous, ignore this */
     if (src === this.__textureSrc) { return }
+    log("Source isn't same as previous.");
 
     /* check if we already get the srcData */
     let srcData = gifData[src]
     if (!srcData || !srcData.callbacks) {
+      log("Didn't already have source.");
       /* create callback */
       srcData = gifData[src] = { callbacks: [] }
       srcData.callbacks.push(cb)
     }
     else if (srcData.src) {
+      log("Already had source data, calling cb");
       cb(srcData)
       return
     }
@@ -253,15 +261,19 @@ AFRAME.registerShader('gif', {
     }
     const tester = new Image()
     tester.crossOrigin = 'Anonymous'
+    log("Created tester image, time to attach loader");
     tester.addEventListener('load', e => {
+      log(`Image ${src} loaded.`);
       /* check if it is gif */
       this.__getUnit8Array(src, arr => {
         if (!arr) {
-          onError('This is not gif. Please use `shader:flat` instead')
+          onError('This is not gif. Please use `shader:flat` instead');
           return
         }
         /* parse data */
+        log(`Should parse gif for ${src} next`);
         parseGIF(arr, (times, cnt, frames) => {
+          log(`Parsing Gif for ${src}`);
           /* store data */
           const newData = { status: 'success', src: src, times: times, cnt: cnt, frames: frames, timestamp: Date.now() }
           /* callbacks */
@@ -270,7 +282,10 @@ AFRAME.registerShader('gif', {
             /* overwrite */
             gifData[src] = newData
           }
-        }, (err) => onError(err))
+        }, (err) => {
+          log(`Error parsing gif for ${src}, ${err}`);
+          onError(err)
+        })
       })
     })
     tester.addEventListener('error', e => onError('Could be the following issue\n - Not Image\n - Not Found\n - Server Error\n - Cross-Origin Issue'))
@@ -324,13 +339,16 @@ AFRAME.registerShader('gif', {
    * @return {object} Selected DOM element | error message object.
    */
   __validateAndGetQuerySelector (selector) {
+    log("Validating as querySelector", selector);
     try {
       var el = document.querySelector(selector)
+      log("QuerySelector element", el);
       if (!el) {
         return { error: 'No element was found matching the selector' }
       }
       return el
     } catch (e) {  // Capture exception if it's not a valid selector.
+      log("QuerySelector Failed", e);
       return { error: 'no valid selector' }
     }
   },
@@ -409,7 +427,8 @@ AFRAME.registerShader('gif', {
    */
   __clearCanvas () {
     this.__ctx.clearRect(0, 0, this.__width, this.__height)
-    this.__texture.needsUpdate = true
+    // Something breaks here - needsUpdate is being called too much perhaps?
+    // this.__texture.needsUpdate = true
   },
 
   /**
@@ -455,8 +474,8 @@ AFRAME.registerShader('gif', {
     this.__frames = frames
     this.__frameCnt = times.length
     this.__startTime = Date.now()
-    this.__width = THREE.Math.floorPowerOfTwo(frames[0].width)
-    this.__height = THREE.Math.floorPowerOfTwo(frames[0].height)
+    this.__width = THREE.MathUtils.floorPowerOfTwo(frames[0].width)
+    this.__height = THREE.MathUtils.floorPowerOfTwo(frames[0].height)
     this.__cnv.width = this.__width
     this.__cnv.height = this.__height
     this.__draw()
